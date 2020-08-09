@@ -8,7 +8,7 @@ grass_color = (72, 217, 127)
 
 def main():
     # generate basic island
-    island_grid = cell.generate((50, 50), 42, 5)
+    island_grid = cell.generate((50, 50), 30, 5)
 
     # check if tile is near water if it is make it a sand tile
     for i in range(len(island_grid)):

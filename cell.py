@@ -4,7 +4,7 @@ import math
 import datetime
 
 def main():
-    save_png(generate((200, 200), 47, 6), 'images/cellular_automata.png')
+    save_png(generate((200, 200), 50, 10), 'images/cellular_automata.png')
 
 def generate(size, place_chance, smooth_cycles, seed=None):
     # set seed
@@ -29,32 +29,10 @@ def generate(size, place_chance, smooth_cycles, seed=None):
                 else:
                     grid[i][j] = 0
 
-
-    # iterate and smooth through the first half of the grid
-    for i in range(size[0]):
-        for j in range(size[1] - math.floor(i * size[1]/size[0])):
-            # find amount of neighbors
-            neighbors = find_neighbors(grid, (i, j))
-            # if a square has more than 4 neighbors than make it a wall else if it has less than 4 make it a tile
-            if neighbors > 4:
-                grid[i][j] = 1
-            elif neighbors < 4:
-                grid[i][j] = 0
-                
-    # iterate and smooth through the last half of the grid backwards
-    for i in range(size[0] - 1, 0, -1):
-        for j in range(size[1] - 1, 0 + math.floor((size[0] - i) * size[1]/size[0]), -1):
-            # find amount of neighbors
-            neighbors = find_neighbors(grid, (i, j))
-            # if a square has more than 4 neighbors than make it a wall else if it has less than 4 make it a tile
-            if neighbors > 4:
-                grid[i][j] = 1
-            elif neighbors < 4:
-                grid[i][j] = 0
-    
-
-    # smooth out the rest of the grid to get rid of any seams
+    # smooth to copy of grid
     for x in range(smooth_cycles):
+        # create copy of grid
+        grid_copy = list(map(list, grid))
         # interate through grid
         for i in range(size[0]):
             for j in range(size[1]):
@@ -62,10 +40,12 @@ def generate(size, place_chance, smooth_cycles, seed=None):
                 neighbors = find_neighbors(grid, (i, j))
                 # if a square has more than 4 neighbors than make it a wall else if it has less than 4 make it a tile
                 if neighbors > 4:
-                    grid[i][j] = 1
+                    grid_copy[i][j] = 1
                 elif neighbors < 4:
-                    grid[i][j] = 0
-    
+                    grid_copy[i][j] = 0
+        # set grid to the modified copy of grid to prevent bias
+        grid = grid_copy
+
     # output grid
     return grid
 
